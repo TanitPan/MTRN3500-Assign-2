@@ -26,7 +26,8 @@ struct GPS
 
 struct Laser
 {
-
+	double XRange[361];
+	double YRange[361];
 };
 
 struct PM

@@ -3,7 +3,7 @@
 #include <conio.h>
 #include <iostream>
 #include <TlHelp32.h>
-#define NUM_PROCESS 1
+#define NUM_PROCESS 3
 
 
 using namespace System;
@@ -22,9 +22,9 @@ using namespace System::Threading;
 TCHAR* Units[10] = //
 {
 	TEXT("GPSModule.exe"),
-	TEXT("LaserModule.exe"), // Should change to laser
-	TEXT("XBox.exe"),
-	TEXT("VehicleControl.exe"),
+	TEXT("VehicleModule.exe"), // Should change to laser
+	TEXT("LaserModule.exe"),
+	TEXT("XboxModule.exe"),
 	TEXT("OpenGL.exe"),
 
 };
@@ -57,11 +57,18 @@ bool IsProcessRunning(const char* processName)
 int main()
 {
 	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
+	SMObject LaserObj(_TEXT("LaserObj"), sizeof(Laser));
 
 	PM* PMSMPtr = nullptr;
 
 	PMObj.SMCreate();
 	if (PMObj.SMCreateError) {
+		Console::WriteLine("Shared memory creation failed");
+		return -1;
+	}
+
+	LaserObj.SMCreate();
+	if (LaserObj.SMCreateError) {
 		Console::WriteLine("Shared memory creation failed");
 		return -1;
 	}
@@ -107,7 +114,7 @@ int main()
 			}
 		}
 		std::cout << "Started: " << Units[i] << std::endl;
-		Sleep(1000);
+		Sleep(100);
 	}
 
 
@@ -117,7 +124,7 @@ int main()
 		Sleep(200);
 		PMSMPtr->PMHeartbeats.Flags.GPS = 1;
 		PMSMPtr->PMHeartbeats.Flags.Laser = 1;
-		
+		PMSMPtr->PMHeartbeats.Flags.Vehicle = 1;
 		
 		if (PMSMPtr->Heartbeats.Flags.GPS)
 		{
@@ -128,8 +135,18 @@ int main()
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
 
+		if (PMSMPtr->Heartbeats.Flags.Vehicle)
+		{
+			PMSMPtr->Heartbeats.Flags.Vehicle = 0;
+		}
+		else
+		{
+			PMSMPtr->Shutdown.Status = 0xFF;
+		}
+
 		Sleep(10);
 		Console::WriteLine(PMSMPtr->Heartbeats.Flags.GPS);
+		Console::WriteLine(PMSMPtr->Heartbeats.Flags.Vehicle);
 		
 
 		/*if (PMSMPtr->Heartbeats.Flags.Laser)

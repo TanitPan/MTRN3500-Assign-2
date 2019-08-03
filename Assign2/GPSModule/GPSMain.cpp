@@ -1,7 +1,7 @@
 #include <SMObject.h>
 #include <SMStructs.h>
 #include <conio.h>
-#define WAIT_TIME 50
+#define WAIT_TIME 200 // may need some modification later
 
 using namespace System;
 using namespace System::Threading;
