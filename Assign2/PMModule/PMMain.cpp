@@ -58,6 +58,7 @@ int main()
 {
 	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
 	SMObject LaserObj(_TEXT("LaserObj"), sizeof(Laser));
+	SMObject GPSObj(_TEXT("GPSObj"), sizeof(GPS));
 
 	PM* PMSMPtr = nullptr;
 
@@ -69,6 +70,12 @@ int main()
 
 	LaserObj.SMCreate();
 	if (LaserObj.SMCreateError) {
+		Console::WriteLine("Shared memory creation failed");
+		return -1;
+	}
+
+	GPSObj.SMCreate();
+	if (GPSObj.SMCreateError) {
 		Console::WriteLine("Shared memory creation failed");
 		return -1;
 	}
