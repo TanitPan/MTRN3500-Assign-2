@@ -62,7 +62,7 @@ bool GPSRef::Connect()
 
 	// Instantiations
 	Client = gcnew TcpClient(IPAddress, PortNumber);
-	array<unsigned char>^ RecvData = gcnew array<unsigned char>(256);
+	RecvData = gcnew array<unsigned char>(256);
 
 	// Configurations, set the read/write timeouts & buffer size
 	Client->NoDelay = true;
@@ -85,13 +85,14 @@ void GPSRef::GetGPSData()
 {
 	if (Stream->DataAvailable)
 	{
+
 		Stream->Read(RecvData, 0, RecvData->Length);
 	}
 
-
+		
 	// Trapping the Header
 	unsigned int Header = 0;
-	unsigned char Data;
+	unsigned char Data =0;
 	int i = 0;
 	bool headerFlag = 1;
 	int Start;

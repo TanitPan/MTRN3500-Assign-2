@@ -24,7 +24,7 @@ int main()
 
 	PM* PMSMPtr = nullptr;
 	Laser* LaserSMPtr = nullptr;
-	int WaitCount;
+	int WaitCount = 0;
 
 
 	PMObj.SMAccess();

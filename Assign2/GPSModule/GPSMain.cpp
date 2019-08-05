@@ -59,20 +59,21 @@ int main()
 		{
 			PMSMPtr->PMHeartbeats.Flags.GPS = 0;
 			WaitCount = 0;
-			Console::WriteLine("{0,9:F6}", WaitCount);
+			//Console::WriteLine("{0,9:F6}", WaitCount);
 		}
 		else
 		{
 			if (++WaitCount > WAIT_TIME)
 			{
-				Console::WriteLine(WaitCount);
-				Console::WriteLine("GPS am dead");
+				//Console::WriteLine(WaitCount);
+				//Console::WriteLine("GPS am dead");
 				PMSMPtr->Shutdown.Status = 0xFF;
 			}
-			Console::WriteLine("Waitcount: " + WaitCount);
+			//Console::WriteLine("Waitcount: " + WaitCount);
 		}
 
-		Console::WriteLine("{0,9:F3}", PMSMPtr->PMTimeStamp);
+		System::Threading::Thread::Sleep(5);
+		//Console::WriteLine("{0,9:F3}", PMSMPtr->PMTimeStamp);
 		PMSMPtr->PMTimeStamp = 0;
 
 		MyGPS->ErrorCode = 0;
@@ -94,7 +95,8 @@ int main()
 		//if (_kbhit()) break;
 		Sleep(20);
 	}
-
+	MyGPS->Stream->Close();
+	MyGPS->Client->Close();
 	Console::ReadKey();
 	Console::WriteLine("GPS terminated normally.");
 	Console::ReadKey();
