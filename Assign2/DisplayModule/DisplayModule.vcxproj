@@ -127,31 +127,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Camera.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Frustum.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Ground.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\HUD.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\KeyManager.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Messages.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\MyVehicle.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Quaternion.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Shape.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\VectorMaths.hpp" />
-    <ClInclude Include="..\..\SystemIntegrationVis-Base-2018\Vehicle.hpp" />
+    <ClCompile Include="..\Common\SMObject.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Messages.cpp" />
+    <ClCompile Include="MyVehicle.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="VectorMaths.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Camera.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Frustum.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Ground.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\HUD.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\KeyManager.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\main.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Messages.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\MyVehicle.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Quaternion.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Shape.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\VectorMaths.cpp" />
-    <ClCompile Include="..\..\SystemIntegrationVis-Base-2018\Vehicle.cpp" />
+    <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Frustum.hpp" />
+    <ClInclude Include="Ground.hpp" />
+    <ClInclude Include="HUD.hpp" />
+    <ClInclude Include="KeyManager.hpp" />
+    <ClInclude Include="Messages.hpp" />
+    <ClInclude Include="MyVehicle.hpp" />
+    <ClInclude Include="Quaternion.hpp" />
+    <ClInclude Include="Shape.hpp" />
+    <ClInclude Include="VectorMaths.hpp" />
+    <ClInclude Include="Vehicle.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

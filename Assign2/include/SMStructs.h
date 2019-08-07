@@ -26,8 +26,9 @@ struct GPS
 
 struct Laser
 {
-	double XRange[361];
-	double YRange[361];
+	double XRange[600];
+	double YRange[600];
+	int NumRanges;
 };
 
 struct PM
@@ -39,7 +40,7 @@ struct PM
 
 };
 
-struct Vehicle
+struct VehicleSM
 {
 
 };

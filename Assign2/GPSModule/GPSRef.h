@@ -1,8 +1,8 @@
 #pragma once
-#include <conio.h>
 #using <System.dll>
 
 #define CRC32_POLYNOMIAL			0xEDB88320L
+
 
 using namespace System;
 using namespace System::Threading;

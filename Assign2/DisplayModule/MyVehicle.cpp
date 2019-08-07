@@ -140,14 +140,14 @@ void MyVehicle::plotLaser()
 {
 	glPushMatrix();
 	glTranslatef(0.5, 0.3, 0);
-	glColor3f(1.0, 0, 0);
-	glLineWidth(1);
+	glColor3f(0, 1.0, 0);
+	glLineWidth(1.5);
 
 	for (int i = 0; i < *numRanges; i++)
 	{
 		glBegin(GL_LINES);
 		glVertex3f(0,0,0);
-		glVertex3f(rangeX[i], -rangeY[i], 0);
+		glVertex3f(*(rangeX + i)/1000.0, 0, -*(rangeY + i )/1000.0);
 
 		glEnd();
 
@@ -181,6 +181,7 @@ void MyVehicle::draw()
 	positionInGL();
 	
 	drawUGV(steering);
-
+	plotLaser();
+	//Thread::Sleep(40);
 	glPopMatrix();
 }

@@ -1,6 +1,7 @@
 
 #include <SMStructs.h>
 #include <SMObject.h>
+#include <conio.h>
 #include "GPSRef.h"
 
 

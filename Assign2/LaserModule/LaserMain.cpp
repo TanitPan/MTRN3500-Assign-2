@@ -75,12 +75,14 @@ int main()
 		MyLaser->GetLaserScan();
 		
 		if (MyLaser->ContinueFlag == 1) continue;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < MyLaser->NumRanges; i++)
 		{
+			LaserSMPtr->NumRanges = MyLaser->NumRanges;
 			LaserSMPtr->XRange[i] = MyLaser->RangeX[i];
 			LaserSMPtr->YRange[i] = MyLaser->RangeY[i];
+			
 
-			Console::WriteLine("{0,10:F3} {1,10:F3}", LaserSMPtr->XRange[i], LaserSMPtr->YRange[i]);
+			//Console::WriteLine("{0,10:F3} {1,10:F3}", LaserSMPtr->XRange[i], LaserSMPtr->YRange[i]);
 		}
 
 		//Console::WriteLine("StartAngle:{0,10:F3}  Resolution:{1,10:F3}  NumRanges:{2,10:D}", StartAngle, Resolution, NumRanges);

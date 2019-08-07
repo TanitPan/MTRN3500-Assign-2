@@ -68,7 +68,7 @@ void LiDAR::GetLaserScan()
 
 	// Translating the ASCII data to usable values
 	StartAngle = System::Convert::ToInt32(Fragments[23], 16);
-	Resolution = (double)System::Convert::ToInt32(Fragments[24], 16) / 10000;
+	Resolution = (double)System::Convert::ToInt32(Fragments[24], 16) / 10000.0;
 	NumRanges = System::Convert::ToInt32(Fragments[25], 16);
 
 	Range = gcnew array<double>(NumRanges);
