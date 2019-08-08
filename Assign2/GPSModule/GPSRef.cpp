@@ -68,8 +68,8 @@ bool GPSRef::Connect()
 	Client->NoDelay = true;
 	Client->ReceiveTimeout = 2000;//ms The number is given by Tutor 2000
 	Client->SendTimeout = 500;//ms  The number is given by Tutor 2000
-	Client->ReceiveBufferSize = 256; // used to be 1024
-	Client->SendBufferSize = 16;
+	Client->ReceiveBufferSize = 500; // used to be 1024
+	Client->SendBufferSize = 50;
 
 
 	// Get the network stream object associated with client so we 
@@ -115,7 +115,9 @@ void GPSRef::GetGPSData()
 			*(BytePtr + i) = RecvData[i];
 		}
 
-		CalculatedCRC = CalculateBlockCRC32(108, BytePtr);
+		this->CalculatedCRC = CalculateBlockCRC32(108, BytePtr);
+		this->ServerCRC = NovatelGPS.Checksum;
+		Console::WriteLine("CalculatedCRC: {0, 10:F0}   ServerCRC: {1, 10:F0}   Equality: {2}", CalculatedCRC, ServerCRC, CalculatedCRC == ServerCRC);
 		if (CalculatedCRC == NovatelGPS.Checksum)
 		{
 			Height = NovatelGPS.Height;

@@ -3,7 +3,7 @@
 #include <conio.h>
 #include <iostream>
 #include <TlHelp32.h>
-#define NUM_PROCESS 3
+#define NUM_PROCESS 5
 
 
 using namespace System;
@@ -22,10 +22,10 @@ using namespace System::Threading;
 TCHAR* Units[10] = //
 {
 	TEXT("GPSModule.exe"),
-	TEXT("VehicleModule.exe"), // Should change to laser
-	TEXT("LaserModule.exe"),
+	TEXT("LaserModule.exe"), // Should change to laser
+	TEXT("VehicleModule.exe"),
 	TEXT("XboxModule.exe"),
-	TEXT("OpenGL.exe"),
+	TEXT("DisplayModule.exe"),
 
 };
 
@@ -56,11 +56,17 @@ bool IsProcessRunning(const char* processName)
 
 int main()
 {
+	// Declaring SM Object
 	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
 	SMObject LaserObj(_TEXT("LaserObj"), sizeof(Laser));
 	SMObject GPSObj(_TEXT("GPSObj"), sizeof(GPS));
-
+	SMObject VehicleObj(_TEXT("VehicleObj"), sizeof(VehicleSM));
+	SMObject XboxObj(_TEXT("XboxObj"), sizeof(Remote));
+	
+	//SMObject 
 	PM* PMSMPtr = nullptr;
+	Remote* XboxSMPtr = nullptr;
+	
 
 	PMObj.SMCreate();
 	if (PMObj.SMCreateError) {
@@ -80,13 +86,21 @@ int main()
 		return -1;
 	}
 
+	VehicleObj.SMCreate();
+	XboxObj.SMCreate();
+	
+
 	PMObj.SMAccess();
 	if (PMObj.SMAccessError) {
 		Console::WriteLine("Shared memory access failed");
 		return -2;
 	}
+	XboxObj.SMAccess();
+
 	
 	PMSMPtr = (PM*)PMObj.pData;
+	XboxSMPtr = (Remote*)XboxObj.pData;
+
 	PMSMPtr->Shutdown.Flags.PM = 0;
 	PMSMPtr->Heartbeats.Status = 0x00;
 	
@@ -121,7 +135,7 @@ int main()
 			}
 		}
 		std::cout << "Started: " << Units[i] << std::endl;
-		Sleep(100);
+		Sleep(50);
 	}
 
 
@@ -129,9 +143,8 @@ int main()
 	while (!PMSMPtr->Shutdown.Flags.PM)
 	{
 		Sleep(200);
-		PMSMPtr->PMHeartbeats.Flags.GPS = 1;
-		PMSMPtr->PMHeartbeats.Flags.Laser = 1;
-		PMSMPtr->PMHeartbeats.Flags.Vehicle = 1;
+		PMSMPtr->PMHeartbeats.Status = 0xFF;
+		
 		
 		if (PMSMPtr->Heartbeats.Flags.GPS)
 		{
@@ -139,8 +152,43 @@ int main()
 		}
 		else
 		{
+			// Check if each process is running
+			if (!IsProcessRunning(Units[0]))
+			{
+				ZeroMemory(&s[0], sizeof(s[0]));
+				s[0].cb = sizeof(s[0]);
+				ZeroMemory(&p[0], sizeof(p[0]));
+				// Start the child processes.
+
+				if (!CreateProcess(NULL,   // No module name (use command line)
+					Units[0],        // Command line
+					NULL,           // Process handle not inheritable
+					NULL,           // Thread handle not inheritable
+					FALSE,          // Set handle inheritance to FALSE
+					CREATE_NEW_CONSOLE,              // No creation flags
+					NULL,           // Use parent's environment block
+					NULL,           // Use parent's starting directory
+					&s[0],            // Pointer to STARTUPINFO structure
+					&p[0])           // Pointer to PROCESS_INFORMATION structure
+					)
+				{
+					printf("%s failed (%d).\n", Units[0], GetLastError());
+					//_getch(); can be changed to _kbhit()
+					_kbhit();
+					return -1;
+				}
+			}
+		}
+
+		if (PMSMPtr->Heartbeats.Flags.Laser)
+		{
+			PMSMPtr->Heartbeats.Flags.Laser = 0;
+		}
+		else
+		{
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
+
 
 		if (PMSMPtr->Heartbeats.Flags.Vehicle)
 		{
@@ -151,11 +199,25 @@ int main()
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
 
-		Sleep(10);
-		Console::WriteLine(PMSMPtr->Heartbeats.Flags.GPS);
-		Console::WriteLine(PMSMPtr->Heartbeats.Flags.Vehicle);
+		if (PMSMPtr->Heartbeats.Flags.Xbox)
+		{
+			PMSMPtr->Heartbeats.Flags.Xbox = 0;
+		}
+		else
+		{
+			PMSMPtr->Shutdown.Status = 0xFF;
+		}
 		
 
+
+		Sleep(10);
+		Console::WriteLine("[GPS Heartbeat " + PMSMPtr->Heartbeats.Flags.GPS);
+		Console::WriteLine("Laser Heartbeat " + PMSMPtr->Heartbeats.Flags.Laser);
+		Console::WriteLine("Xbox Heartbeat " + PMSMPtr->Heartbeats.Flags.Xbox);
+		Console::WriteLine("Vehicle Heartbeat " + PMSMPtr->Heartbeats.Flags.Vehicle + "]\n");
+
+
+	
 		/*if (PMSMPtr->Heartbeats.Flags.Laser)
 		{
 			PMSMPtr->Heartbeats.Flags.Laser = 0;
@@ -168,7 +230,7 @@ int main()
 		//PMSMPtr->PMTimeStamp = 300;
 		//if (_kbhit()) break;
 		
-		if (_kbhit())
+		if (_kbhit() || XboxSMPtr->routineShutdown)
 		{
 			PMSMPtr->Shutdown.Status = 0xFF;
 			bool allShutdown = false;
@@ -194,7 +256,7 @@ int main()
 		
 	}
 	
-	Console::ReadKey();
+	//Console::ReadKey();
 	Console::WriteLine("Process Mangement terminated normally.");
 	Console::ReadKey();
 

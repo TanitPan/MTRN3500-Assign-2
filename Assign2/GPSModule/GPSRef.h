@@ -27,10 +27,9 @@ public:
 	double Height;
 	int ErrorCode = 0;
 	unsigned int CalculatedCRC;
+	unsigned int ServerCRC;
 
-	
 	// arrays of unsigned chars to send and receive data
-	array<unsigned char>^ SendData;
 	array<unsigned char>^ RecvData;
 public:
 	GPSRef(System::String^ ipaddress, int port);

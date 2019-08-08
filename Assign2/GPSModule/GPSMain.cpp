@@ -6,9 +6,7 @@
 
 
 
- 
-
-#define WAIT_TIME 200 // may need some modification later
+#define WAIT_TIME 100 // may need some modification later
 
 using namespace System;
 using namespace System::Threading;
@@ -23,6 +21,7 @@ int main()
 {
 	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
 	SMObject GPSObj(_TEXT("GPSObj"), sizeof(GPS));
+
 
 	PM* PMSMPtr = nullptr;
 	GPS* GPSSMPtr = nullptr;
@@ -90,17 +89,18 @@ int main()
 			GPSSMPtr->Easting = MyGPS->GetEasting();
 
 
-			Console::WriteLine("{0,10:F3} {1, 10:F3} {2, 10:F3}", GPSSMPtr->Height, GPSSMPtr->Northing, GPSSMPtr->Easting);
+
+			Console::WriteLine("{0,10:F3} {1, 10:F3} {2, 10:F3}\n", GPSSMPtr->Height, GPSSMPtr->Northing, GPSSMPtr->Easting);
 		}
 
 		//if (_kbhit()) break;
-		Sleep(20);
+		Thread::Sleep(20);
 	}
 	MyGPS->Stream->Close();
 	MyGPS->Client->Close();
-	Console::ReadKey();
+	//Console::ReadKey();
 	Console::WriteLine("GPS terminated normally.");
-	Console::ReadKey();
+	//Console::ReadKey();
 
 	return 0;
 }

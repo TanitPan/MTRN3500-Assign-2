@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SMObject.h>
-#include <SMStructs.h>
 #using <System.dll>
 
 using namespace System;

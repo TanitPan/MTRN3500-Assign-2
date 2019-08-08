@@ -94,7 +94,7 @@
       <AdditionalIncludeDirectories>D:\MTRN3500\Assignment2\Assign2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,7 +127,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\SMObject.cpp" />
+    <ClCompile Include="XBoxController.cpp" />
     <ClCompile Include="XboxMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XBoxController.h" />
+    <ClInclude Include="XInputWrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,12 +1,12 @@
 //Compile in a C++ CLR empty project
-//#include <SMObject.h>
-//#include <SMStructs.h>
+#include <SMObject.h>
+#include <SMStructs.h>
 //#using <System.dll>
 #include "LiDAR.h"
 
 
 #include <conio.h>//_kbhit()
-#define WAIT_TIME 40
+#define WAIT_TIME 200
 
 //using namespace System;
 //using namespace System::Net::Sockets; Already include in LiDAR.h
@@ -68,6 +68,7 @@ int main()
 			if (++WaitCount > WAIT_TIME)
 			{
 				PMSMPtr->Shutdown.Status = 0xFF;
+				Console::WriteLine("Laser Die");
 			}
 		}
 
@@ -91,13 +92,14 @@ int main()
 		// Print the received string on the screen
 		MyLaser->GetXYRangeData();
 		 
+		Sleep(30);
 	}
 
 	MyLaser->Stream->Close();
 	MyLaser->Client->Close();
 
 	Console::WriteLine("LaserMain terminated normally.");
-	Console::ReadKey();
+	//Console::ReadKey();
 	//Console::ReadKey();
 
 

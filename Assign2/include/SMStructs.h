@@ -42,10 +42,14 @@ struct PM
 
 struct VehicleSM
 {
-
+	double actualSpeed;
+	double actualSteering;
 };
 
 struct Remote
 {
+	double remoteSpeed;
+	double remoteSteering;
+	unsigned char routineShutdown;
 
 };

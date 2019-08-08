@@ -182,6 +182,6 @@ void MyVehicle::draw()
 	
 	drawUGV(steering);
 	plotLaser();
-	//Thread::Sleep(40);
+	Thread::Sleep(60);
 	glPopMatrix();
 }
