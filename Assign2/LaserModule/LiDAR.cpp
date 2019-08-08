@@ -1,5 +1,11 @@
 #include "LiDAR.h"
 
+LiDAR::~LiDAR()
+{
+	Stream->Close();
+	Client->Close();
+}
+
 LiDAR::LiDAR(System::String^ ipaddress, int port)
 {
 	IPAddress = ipaddress;

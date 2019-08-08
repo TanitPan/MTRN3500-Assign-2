@@ -6,7 +6,7 @@
 
 
 
-#define WAIT_TIME 100 // may need some modification later
+#define WAIT_TIME 50 // may need some modification later (100)
 
 using namespace System;
 using namespace System::Threading;
@@ -66,10 +66,10 @@ int main()
 			if (++WaitCount > WAIT_TIME)
 			{
 				//Console::WriteLine(WaitCount);
-				//Console::WriteLine("GPS am dead");
+				Console::WriteLine("GPS am dead");
 				PMSMPtr->Shutdown.Status = 0xFF;
 			}
-			//Console::WriteLine("Waitcount: " + WaitCount);
+			Console::WriteLine("Waitcount: " + WaitCount);
 		}
 
 		System::Threading::Thread::Sleep(5);
@@ -96,11 +96,11 @@ int main()
 		//if (_kbhit()) break;
 		Thread::Sleep(20);
 	}
-	MyGPS->Stream->Close();
-	MyGPS->Client->Close();
+	/*MyGPS->Stream->Close();
+	MyGPS->Client->Close();*/
 	//Console::ReadKey();
 	Console::WriteLine("GPS terminated normally.");
-	//Console::ReadKey();
+	Console::ReadKey();
 
 	return 0;
 }

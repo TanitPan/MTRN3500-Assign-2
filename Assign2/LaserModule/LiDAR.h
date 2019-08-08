@@ -30,6 +30,7 @@ public:
 	array<unsigned char>^ SendData;
 	array<unsigned char>^ ReadData;
 public:
+	~LiDAR();
 	LiDAR(System::String^ ipaddress, int port);
 	bool Connect();
 	void GetLaserScan();

@@ -4,7 +4,7 @@
 #include "XBoxController.h"
 
 
-#define WAIT_TIME 300
+#define WAIT_TIME 50 // 300
 #define MIN_JOY_STICK -32768.0
 #define MAX_JOY_STICK 32767.0
 
@@ -71,6 +71,6 @@ int main()
 	}
 
 	Console::WriteLine("Xbox Process terminated normally");
-	//Console::ReadKey();
+	Console::ReadKey();
 	return 0;
 }

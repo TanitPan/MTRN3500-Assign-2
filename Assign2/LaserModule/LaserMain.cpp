@@ -70,6 +70,7 @@ int main()
 				PMSMPtr->Shutdown.Status = 0xFF;
 				Console::WriteLine("Laser Die");
 			}
+			Console::WriteLine("Waitcount: " + WaitCount);
 		}
 
 		MyLaser->ContinueFlag = 0;
@@ -95,11 +96,11 @@ int main()
 		Sleep(30);
 	}
 
-	MyLaser->Stream->Close();
-	MyLaser->Client->Close();
+	/*MyLaser->Stream->Close();
+	MyLaser->Client->Close();*/
 
 	Console::WriteLine("LaserMain terminated normally.");
-	//Console::ReadKey();
+	Console::ReadKey();
 	//Console::ReadKey();
 
 

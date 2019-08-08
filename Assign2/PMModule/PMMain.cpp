@@ -52,6 +52,58 @@ bool IsProcessRunning(const char* processName)
 	return exists;
 }
 
+int startUp(int i)
+{
+	// Check if each process is running
+	if (!IsProcessRunning(Units[i]))
+	{
+		ZeroMemory(&s[i], sizeof(s[i]));
+		s[i].cb = sizeof(s[i]);
+		ZeroMemory(&p[i], sizeof(p[i]));
+		// Start the child processes.
+
+		if (!CreateProcess(NULL,   // No module name (use command line)
+			Units[i],        // Command line
+			NULL,           // Process handle not inheritable
+			NULL,           // Thread handle not inheritable
+			FALSE,          // Set handle inheritance to FALSE
+			CREATE_NEW_CONSOLE,              // No creation flags
+			NULL,           // Use parent's environment block
+			NULL,           // Use parent's starting directory
+			&s[i],            // Pointer to STARTUPINFO structure
+			&p[i])           // Pointer to PROCESS_INFORMATION structure
+			)
+		{
+			printf("%s failed (%d).\n", Units[i], GetLastError());
+			//_getch(); can be changed to _kbhit()
+			_kbhit();
+			return -1;
+		}
+	}
+	std::cout << "Started: " << Units[i] << std::endl;
+	Sleep(100); //50
+}
+
+void shutDown()
+{
+	bool allShutdown = false;
+	while (!allShutdown)
+	{
+		for (int i = 0; i < NUM_PROCESS; i++)
+		{
+			if (!IsProcessRunning(Units[i]))
+			{
+				allShutdown = true;
+			}
+			else
+			{
+				allShutdown = false;
+				break;
+			}
+		}
+	}
+}
+
 
 
 int main()
@@ -108,36 +160,11 @@ int main()
 	// Starting the processes
 	for (int i = 0; i < NUM_PROCESS; i++)
 	{
-		// Check if each process is running
-		if (!IsProcessRunning(Units[i]))
+		if (startUp(i) == -1)
 		{
-			ZeroMemory(&s[i], sizeof(s[i]));
-			s[i].cb = sizeof(s[i]);
-			ZeroMemory(&p[i], sizeof(p[i]));
-			// Start the child processes.
-
-			if (!CreateProcess(NULL,   // No module name (use command line)
-				Units[i],        // Command line
-				NULL,           // Process handle not inheritable
-				NULL,           // Thread handle not inheritable
-				FALSE,          // Set handle inheritance to FALSE
-				CREATE_NEW_CONSOLE,              // No creation flags
-				NULL,           // Use parent's environment block
-				NULL,           // Use parent's starting directory
-				&s[i],            // Pointer to STARTUPINFO structure
-				&p[i])           // Pointer to PROCESS_INFORMATION structure
-				)
-			{
-				printf("%s failed (%d).\n", Units[i], GetLastError());
-				//_getch(); can be changed to _kbhit()
-				_kbhit();
-				return -1;
-			}
+			return -1;
 		}
-		std::cout << "Started: " << Units[i] << std::endl;
-		Sleep(50);
 	}
-
 
 
 	while (!PMSMPtr->Shutdown.Flags.PM)
@@ -152,32 +179,7 @@ int main()
 		}
 		else
 		{
-			// Check if each process is running
-			if (!IsProcessRunning(Units[0]))
-			{
-				ZeroMemory(&s[0], sizeof(s[0]));
-				s[0].cb = sizeof(s[0]);
-				ZeroMemory(&p[0], sizeof(p[0]));
-				// Start the child processes.
-
-				if (!CreateProcess(NULL,   // No module name (use command line)
-					Units[0],        // Command line
-					NULL,           // Process handle not inheritable
-					NULL,           // Thread handle not inheritable
-					FALSE,          // Set handle inheritance to FALSE
-					CREATE_NEW_CONSOLE,              // No creation flags
-					NULL,           // Use parent's environment block
-					NULL,           // Use parent's starting directory
-					&s[0],            // Pointer to STARTUPINFO structure
-					&p[0])           // Pointer to PROCESS_INFORMATION structure
-					)
-				{
-					printf("%s failed (%d).\n", Units[0], GetLastError());
-					//_getch(); can be changed to _kbhit()
-					_kbhit();
-					return -1;
-				}
-			}
+			startUp(0);
 		}
 
 		if (PMSMPtr->Heartbeats.Flags.Laser)
@@ -186,6 +188,7 @@ int main()
 		}
 		else
 		{
+			Console::WriteLine("Laser in PM check die");
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
 
@@ -196,6 +199,7 @@ int main()
 		}
 		else
 		{
+			Console::WriteLine("Vehicle in PM check die");
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
 
@@ -205,6 +209,7 @@ int main()
 		}
 		else
 		{
+			Console::WriteLine("Xbox in PM check die");
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
 		
@@ -217,15 +222,6 @@ int main()
 		Console::WriteLine("Vehicle Heartbeat " + PMSMPtr->Heartbeats.Flags.Vehicle + "]\n");
 
 
-	
-		/*if (PMSMPtr->Heartbeats.Flags.Laser)
-		{
-			PMSMPtr->Heartbeats.Flags.Laser = 0;
-		}
-		else
-		{
-			PMSMPtr->Shutdown.Status = 0xFF;
-		}*/
 
 		//PMSMPtr->PMTimeStamp = 300;
 		//if (_kbhit()) break;
@@ -233,22 +229,7 @@ int main()
 		if (_kbhit() || XboxSMPtr->routineShutdown)
 		{
 			PMSMPtr->Shutdown.Status = 0xFF;
-			bool allShutdown = false;
-			while (!allShutdown)
-			{
-				for (int i = 0; i < NUM_PROCESS; i++) 
-				{
-					if (!IsProcessRunning(Units[i]))
-					{
-						allShutdown = true;
-					}
-					else
-					{
-						allShutdown = false;
-						break;
-					}
-				}
-			}
+			shutDown();
 			/*PMSMPtr->Shutdown.Status = 0xFE;
 			Sleep(2500);
 			PMSMPtr->Shutdown.Flags.PM = 1;*/

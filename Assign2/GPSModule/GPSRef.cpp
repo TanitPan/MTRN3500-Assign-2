@@ -83,11 +83,11 @@ bool GPSRef::Connect()
 
 void GPSRef::GetGPSData()
 {
-	if (Stream->DataAvailable)
-	{
+	//if (Stream->DataAvailable)
+	//{
 
 		Stream->Read(RecvData, 0, RecvData->Length);
-	}
+//	}
 
 		
 	// Trapping the Header
