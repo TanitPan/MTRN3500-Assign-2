@@ -6,7 +6,7 @@
 
 
 #include <conio.h>//_kbhit()
-#define WAIT_TIME 200
+#define WAIT_TIME 250
 
 //using namespace System;
 //using namespace System::Net::Sockets; Already include in LiDAR.h
@@ -93,14 +93,14 @@ int main()
 		// Print the received string on the screen
 		MyLaser->GetXYRangeData();
 		 
-		Sleep(30);
+		Sleep(35);
 	}
 
 	/*MyLaser->Stream->Close();
 	MyLaser->Client->Close();*/
 
 	Console::WriteLine("LaserMain terminated normally.");
-	Console::ReadKey();
+	//Console::ReadKey();
 	//Console::ReadKey();
 
 

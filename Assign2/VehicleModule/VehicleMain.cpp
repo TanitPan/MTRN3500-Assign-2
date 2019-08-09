@@ -3,7 +3,7 @@
 #include <conio.h>
 
 #include "VehicleRef.h"
-#define WAIT_TIME 50
+#define WAIT_TIME 100
 
 using namespace System;
 using namespace System::Threading;
@@ -58,7 +58,7 @@ int main()
 				Console::WriteLine("Vehicle is dead");
 				PMSMPtr->Shutdown.Status = 0xFF;
 			}
-			Console::WriteLine("Waitcount: " + WaitCount);
+		//	Console::WriteLine("Waitcount: " + WaitCount);
 			
 		}
 
@@ -73,7 +73,7 @@ int main()
 
 	//Console::ReadKey();
 	Console::WriteLine("Vehicle Process terminated normally.");
-	Console::ReadKey();
+	//Console::ReadKey();
 
 	return 0;
 }

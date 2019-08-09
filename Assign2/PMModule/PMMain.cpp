@@ -84,6 +84,29 @@ int startUp(int i)
 	Sleep(100); //50
 }
 
+//void TaskKill() {
+//	//bool allShutdown = false;
+//	//while (!allShutdown) {
+//	//	for (int i = 0; i < NUM_PROCESS; i++) {
+//	//		if (IsProcessRunning(Units[i])) {
+//	//			allShutdown = false;
+//	//			break;
+//	//		}
+//	//		else {
+//	//			allShutdown = true;
+//	//		}
+//	//	}
+//	//}
+//	int retval;
+//	retval = ::_tsystem(_T("taskkill /F /T /IM GPSModule.exe"));
+//	retval = ::_tsystem(_T("taskkill /F /T /IM LaserModule.exe"));
+//	retval = ::_tsystem(_T("taskkill /F /T /IM VehicleModule.exe"));
+//	retval = ::_tsystem(_T("taskkill /F /T /IM XBoxModule.exe"));
+//	retval = ::_tsystem(_T("taskkill /F /T /IM DisplayModule.exe"));
+//}
+
+
+
 void shutDown()
 {
 	bool allShutdown = false;
@@ -114,6 +137,7 @@ int main()
 	SMObject GPSObj(_TEXT("GPSObj"), sizeof(GPS));
 	SMObject VehicleObj(_TEXT("VehicleObj"), sizeof(VehicleSM));
 	SMObject XboxObj(_TEXT("XboxObj"), sizeof(Remote));
+	
 	
 	//SMObject 
 	PM* PMSMPtr = nullptr;
@@ -169,7 +193,7 @@ int main()
 
 	while (!PMSMPtr->Shutdown.Flags.PM)
 	{
-		Sleep(200);
+		Sleep(250);
 		PMSMPtr->PMHeartbeats.Status = 0xFF;
 		
 		
@@ -212,7 +236,16 @@ int main()
 			Console::WriteLine("Xbox in PM check die");
 			PMSMPtr->Shutdown.Status = 0xFF;
 		}
-		
+		if (PMSMPtr->Heartbeats.Flags.DisplayGL)
+		{
+			PMSMPtr->Heartbeats.Flags.DisplayGL = 0;
+		}
+		else
+		{
+			PMSMPtr->Shutdown.Status = 0xFF;
+			//PMSMPtr->Shutdown.Flags.DisplayGL = 1;
+			//startUp(4);
+		}
 
 
 		Sleep(10);

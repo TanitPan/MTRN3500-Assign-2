@@ -6,7 +6,7 @@
 
 
 
-#define WAIT_TIME 50 // may need some modification later (100)
+#define WAIT_TIME 100 // may need some modification later (100)
 
 using namespace System;
 using namespace System::Threading;
@@ -100,7 +100,7 @@ int main()
 	MyGPS->Client->Close();*/
 	//Console::ReadKey();
 	Console::WriteLine("GPS terminated normally.");
-	Console::ReadKey();
+//	Console::ReadKey();
 
 	return 0;
 }

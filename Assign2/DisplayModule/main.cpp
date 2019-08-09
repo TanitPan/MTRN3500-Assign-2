@@ -28,7 +28,7 @@
 	#include <sys/time.h>
 #endif
 
-
+#define WAIT_TIME 100
 #include "Camera.hpp"
 #include "Ground.hpp"
 #include "KeyManager.hpp"
@@ -39,6 +39,7 @@
 
 #include "Messages.hpp"
 #include "HUD.hpp"
+
 
 void display();
 void reshape(int width, int height);
@@ -66,44 +67,11 @@ int prev_mouse_y = -1;
 Vehicle * vehicle = NULL;
 double speed = 0;
 double steering = 0;
-
+int WaitCount = 0;
 //int _tmain(int argc, _TCHAR* argv[]) {
 int main(int argc, char ** argv) {
 
 
-	
-
-	const int WINDOW_WIDTH = 800;
-	const int WINDOW_HEIGHT = 600;
-
-	glutInit(&argc, (char**)(argv));
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-	glutCreateWindow("MTRN3500 - GL");
-
-	Camera::get()->setWindowDimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	glEnable(GL_DEPTH_TEST);
-
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutIdleFunc(idle);
-
-	glutKeyboardFunc(keydown);
-	glutKeyboardUpFunc(keyup);
-	glutSpecialFunc(special_keydown);
-	glutSpecialUpFunc(special_keyup);
-
-	glutMouseFunc(mouse);
-	glutMotionFunc(dragged);
-	glutPassiveMotionFunc(motion);
-
-	// -------------------------------------------------------------------------
-	// Please uncomment the following line of code and replace 'MyVehicle'
-	//   with the name of the class you want to show as the current 
-	//   custom vehicle.
-	// -------------------------------------------------------------------------
 	SMObject LaserObj(_TEXT("LaserObj"), sizeof(Laser));
 	Laser* LaserSMPtr = nullptr;
 	LaserObj.SMAccess();
@@ -113,17 +81,60 @@ int main(int argc, char ** argv) {
 		return -2;
 	}
 
+	
 	LaserSMPtr = (Laser*)LaserObj.pData;
+	
+	
 
-	// Vehicle setup
-	vehicle = new MyVehicle(&(LaserSMPtr->NumRanges), LaserSMPtr->XRange, LaserSMPtr->YRange);
+	const int WINDOW_WIDTH = 800;
+	const int WINDOW_HEIGHT = 600;
+
+	
+	
+
+		glutInit(&argc, (char**)(argv));
+		glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
+		glutInitWindowPosition(0, 0);
+		glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		glutCreateWindow("MTRN3500 - GL");
+
+		Camera::get()->setWindowDimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+		glEnable(GL_DEPTH_TEST);
+
+		glutDisplayFunc(display);
+		glutReshapeFunc(reshape);
+		glutIdleFunc(idle);
+
+		glutKeyboardFunc(keydown);
+		glutKeyboardUpFunc(keyup);
+		glutSpecialFunc(special_keydown);
+		glutSpecialUpFunc(special_keyup);
+
+		glutMouseFunc(mouse);
+		glutMotionFunc(dragged);
+		glutPassiveMotionFunc(motion);
+
+		// -------------------------------------------------------------------------
+		// Please uncomment the following line of code and replace 'MyVehicle'
+		//   with the name of the class you want to show as the current 
+		//   custom vehicle.
+		// -------------------------------------------------------------------------
+		
 
 
-	glutMainLoop();
+		// Vehicle setup
+		vehicle = new MyVehicle(&(LaserSMPtr->NumRanges), LaserSMPtr->XRange, LaserSMPtr->YRange);
 
-	if (vehicle != NULL) {
-		delete vehicle;
-	}
+
+		glutMainLoop();
+
+		if (vehicle != NULL) {
+			delete vehicle;
+		}
+
+
+
 
 	return 0;
 }
@@ -195,77 +206,112 @@ double getTime()
 void idle() {
 
 	SMObject XboxObj(_TEXT("XboxObj"), sizeof(Remote));
+	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
+	PMObj.SMAccess();
 	XboxObj.SMAccess();
+	PM* PMSMPtr = (PM*)PMObj.pData;
 	Remote* XboxSMPtr = (Remote*)XboxObj.pData;
 
 
-	if (KeyManager::get()->isAsciiKeyPressed('a')) {
-		Camera::get()->strafeLeft();
-	}
-
-	if (KeyManager::get()->isAsciiKeyPressed('c')) {
-		Camera::get()->strafeDown();
-	}
-
-	if (KeyManager::get()->isAsciiKeyPressed('d')) {
-		Camera::get()->strafeRight();
-	}
-
-	if (KeyManager::get()->isAsciiKeyPressed('s')) {
-		Camera::get()->moveBackward();
-	}
-
-	if (KeyManager::get()->isAsciiKeyPressed('w')) {
-		Camera::get()->moveForward();
-	}
-
-	if (KeyManager::get()->isAsciiKeyPressed(' ')) {
-		Camera::get()->strafeUp();
-	}
-
-	speed = XboxSMPtr->remoteSpeed;
-	steering = XboxSMPtr->remoteSteering;
 	
+		PMSMPtr->Heartbeats.Flags.DisplayGL = 1;
+		
+		if (PMSMPtr->PMHeartbeats.Flags.DisplayGL)
+		{
+			PMSMPtr->PMHeartbeats.Flags.DisplayGL = 0;
+			WaitCount = 0;
+			//Console::WriteLine("{0,9:F6}", WaitCount);
+		}
+		else
+		{
+			if (++WaitCount > WAIT_TIME)
+			{
+				//Console::WriteLine(WaitCount);
+				Console::WriteLine("GPS am dead");
+				PMSMPtr->Shutdown.Status = 0xFF;
+			}
+			Console::WriteLine("Waitcount: " + WaitCount);
+		}
+
+		if (PMSMPtr->Shutdown.Flags.DisplayGL)
+		{
+			//PMSMPtr->Shutdown.Flags.DisplayGL = 0;
+			exit(1);
+		}
 
 
-	if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_LEFT)) {
-		steering = Vehicle::MAX_LEFT_STEERING_DEGS * -1;   
-	}
+		if (KeyManager::get()->isAsciiKeyPressed('a')) {
+			Camera::get()->strafeLeft();
+		}
 
-	if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_RIGHT)) {
-		steering = Vehicle::MAX_RIGHT_STEERING_DEGS * -1;
-	}
+		if (KeyManager::get()->isAsciiKeyPressed('c')) {
+			Camera::get()->strafeDown();
+		}
 
-	if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_UP)) {
-		speed = Vehicle::MAX_FORWARD_SPEED_MPS;
-	}
+		if (KeyManager::get()->isAsciiKeyPressed('d')) {
+			Camera::get()->strafeRight();
+		}
 
-	if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_DOWN)) {
-		speed = Vehicle::MAX_BACKWARD_SPEED_MPS;
-	}
+		if (KeyManager::get()->isAsciiKeyPressed('s')) {
+			Camera::get()->moveBackward();
+		}
+
+		if (KeyManager::get()->isAsciiKeyPressed('w')) {
+			Camera::get()->moveForward();
+		}
+
+		if (KeyManager::get()->isAsciiKeyPressed(' ')) {
+			Camera::get()->strafeUp();
+		}
+
+		speed = XboxSMPtr->remoteSpeed;
+		steering = XboxSMPtr->remoteSteering;
+
+
+
+		if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_LEFT)) {
+			steering = Vehicle::MAX_LEFT_STEERING_DEGS * -1;
+		}
+
+		if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_RIGHT)) {
+			steering = Vehicle::MAX_RIGHT_STEERING_DEGS * -1;
+		}
+
+		if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_UP)) {
+			speed = Vehicle::MAX_FORWARD_SPEED_MPS;
+		}
+
+		if (KeyManager::get()->isSpecialKeyPressed(GLUT_KEY_DOWN)) {
+			speed = Vehicle::MAX_BACKWARD_SPEED_MPS;
+		}
 
 
 
 
-	const float sleep_time_between_frames_in_seconds = 0.025;
+		const float sleep_time_between_frames_in_seconds = 0.025;
 
-	static double previousTime = getTime();
-	const double currTime = getTime();
-	const double elapsedTime = currTime - previousTime;
-	previousTime = currTime;
+		static double previousTime = getTime();
+		const double currTime = getTime();
+		const double elapsedTime = currTime - previousTime;
+		previousTime = currTime;
 
-	// do a simulation step
-	if (vehicle != NULL) {
-		vehicle->update(speed, steering, elapsedTime);
-	}
+		// do a simulation step
+		if (vehicle != NULL) {
+			vehicle->update(speed, steering, elapsedTime);
+		}
 
-	display();
+		display();
+		Sleep(10);
+
+
 
 #ifdef _WIN32 
-	Sleep(sleep_time_between_frames_in_seconds * 1000);
+		Sleep(sleep_time_between_frames_in_seconds * 1000);
 #else
-	usleep(sleep_time_between_frames_in_seconds * 1e6);
+		usleep(sleep_time_between_frames_in_seconds * 1e6);
 #endif
+
+
 };
 
 void keydown(unsigned char key, int x, int y) {
