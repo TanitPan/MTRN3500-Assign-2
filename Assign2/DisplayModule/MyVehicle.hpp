@@ -10,13 +10,13 @@ private:
 	int* numRanges;
 	double* rangeX;
 	double* rangeY;
-	void plotLaser();
+	void plotLaser(); // Function to plot laser data
 
 
 public:
 	MyVehicle();
 	MyVehicle(int* numData, double rangeX[], double rangeY[]);
-	void setLaser(int* numData, double rangeX[], double rangeY[]);
+	void setLaser(int* numData, double rangeX[], double rangeY[]); // Function to set laser info
 	virtual void draw();
 
 };

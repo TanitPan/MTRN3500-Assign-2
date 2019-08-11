@@ -27,8 +27,8 @@ struct GPS
 
 struct Laser
 {
-	double XRange[600];
-	double YRange[600];
+	double XRange[500];
+	double YRange[500];
 	int NumRanges;
 };
 

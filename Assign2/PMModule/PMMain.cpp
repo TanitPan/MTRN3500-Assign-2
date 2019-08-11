@@ -5,12 +5,8 @@
 #include <TlHelp32.h>
 #define NUM_PROCESS 5
 
-
 using namespace System;
 using namespace System::Threading;
-
-
-
 
 //The following file gives some useful code fragments 
 //for process management. You should fill out the main function with the following steps:
@@ -52,6 +48,7 @@ bool IsProcessRunning(const char* processName)
 	return exists;
 }
 
+// Process startup routine
 int startUp(int i)
 {
 	// Check if each process is running
@@ -81,32 +78,10 @@ int startUp(int i)
 		}
 	}
 	std::cout << "Started: " << Units[i] << std::endl;
-	Sleep(100); //50
+	Sleep(100); 
 }
 
-//void TaskKill() {
-//	//bool allShutdown = false;
-//	//while (!allShutdown) {
-//	//	for (int i = 0; i < NUM_PROCESS; i++) {
-//	//		if (IsProcessRunning(Units[i])) {
-//	//			allShutdown = false;
-//	//			break;
-//	//		}
-//	//		else {
-//	//			allShutdown = true;
-//	//		}
-//	//	}
-//	//}
-//	int retval;
-//	retval = ::_tsystem(_T("taskkill /F /T /IM GPSModule.exe"));
-//	retval = ::_tsystem(_T("taskkill /F /T /IM LaserModule.exe"));
-//	retval = ::_tsystem(_T("taskkill /F /T /IM VehicleModule.exe"));
-//	retval = ::_tsystem(_T("taskkill /F /T /IM XBoxModule.exe"));
-//	retval = ::_tsystem(_T("taskkill /F /T /IM DisplayModule.exe"));
-//}
-
-
-
+// Shutdown routine
 void shutDown()
 {
 	bool allShutdown = false;
@@ -126,8 +101,6 @@ void shutDown()
 		}
 	}
 }
-
-
 
 int main()
 {
@@ -194,15 +167,17 @@ int main()
 	while (!PMSMPtr->Shutdown.Flags.PM)
 	{
 		Sleep(250);
+		// Setting PM heartbeat to be alive
 		PMSMPtr->PMHeartbeats.Status = 0xFF;
 		
-		
+		// Checking other modules heartbeat
 		if (PMSMPtr->Heartbeats.Flags.GPS)
 		{
 			PMSMPtr->Heartbeats.Flags.GPS = 0;
 		}
 		else
 		{
+			// Non-critical process startup
 			startUp(0);
 		}
 
@@ -243,11 +218,10 @@ int main()
 		else
 		{
 			PMSMPtr->Shutdown.Status = 0xFF;
-			//PMSMPtr->Shutdown.Flags.DisplayGL = 1;
-			//startUp(4);
+	
 		}
 
-
+		// Printing each process heartbeat in PM module
 		Sleep(10);
 		Console::WriteLine("[GPS Heartbeat " + PMSMPtr->Heartbeats.Flags.GPS);
 		Console::WriteLine("Laser Heartbeat " + PMSMPtr->Heartbeats.Flags.Laser);
@@ -255,17 +229,12 @@ int main()
 		Console::WriteLine("Vehicle Heartbeat " + PMSMPtr->Heartbeats.Flags.Vehicle + "]\n");
 
 
-
-		//PMSMPtr->PMTimeStamp = 300;
-		//if (_kbhit()) break;
-		
+		// Shutdown routine if the Xbox key is pressed or keyboard hit
 		if (_kbhit() || XboxSMPtr->routineShutdown)
 		{
 			PMSMPtr->Shutdown.Status = 0xFF;
 			shutDown();
-			/*PMSMPtr->Shutdown.Status = 0xFE;
-			Sleep(2500);
-			PMSMPtr->Shutdown.Flags.PM = 1;*/
+			
 		}
 		
 	}

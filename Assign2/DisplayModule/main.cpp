@@ -233,6 +233,7 @@ void idle() {
 			Console::WriteLine("Waitcount: " + WaitCount);
 		}
 
+		// Close the Display Module if shutdown flag is set
 		if (PMSMPtr->Shutdown.Flags.DisplayGL)
 		{
 			//PMSMPtr->Shutdown.Flags.DisplayGL = 0;

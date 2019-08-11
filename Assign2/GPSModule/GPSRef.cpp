@@ -83,11 +83,11 @@ bool GPSRef::Connect()
 
 void GPSRef::GetGPSData()
 {
-	//if (Stream->DataAvailable)
-	//{
+	if (Stream->DataAvailable)
+	{
 
 		Stream->Read(RecvData, 0, RecvData->Length);
-//	}
+	}
 
 		
 	// Trapping the Header
@@ -118,6 +118,8 @@ void GPSRef::GetGPSData()
 		this->CalculatedCRC = CalculateBlockCRC32(108, BytePtr);
 		this->ServerCRC = NovatelGPS.Checksum;
 		Console::WriteLine("CalculatedCRC: {0, 10:F0}   ServerCRC: {1, 10:F0}   Equality: {2}", CalculatedCRC, ServerCRC, CalculatedCRC == ServerCRC);
+
+		// Check for corruption of data using comparison between current calculated CRC and the correct value form server
 		if (CalculatedCRC == NovatelGPS.Checksum)
 		{
 			Height = NovatelGPS.Height;

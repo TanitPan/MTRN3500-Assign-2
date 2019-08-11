@@ -42,9 +42,9 @@ bool VehicleRef::Connect()
 
 void VehicleRef::ControlVehicle(double steering, double speed, unsigned int flag)
 {
-	Thread::Sleep(7);
-	//System::String^ SendCommand = gcnew System::String("# <+40> <+1> <1> #");
-	System::String^ SendCommand = gcnew System::String("# " +steering.ToString("f3")+" "+speed.ToString("f3")+" "+flag+" #");
+	Thread::Sleep(10);
+	steering = -steering;
+	System::String^ SendCommand = gcnew System::String("# " +steering.ToString("f2")+" "+speed.ToString("f2")+" "+flag+" #");
 
 	Console::WriteLine(SendCommand);
 	SendData = System::Text::Encoding::ASCII->GetBytes(SendCommand);

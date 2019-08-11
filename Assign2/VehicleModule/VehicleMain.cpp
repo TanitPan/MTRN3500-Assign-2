@@ -15,12 +15,6 @@ int main()
 	SMObject VehicleObj(_TEXT("VehicleObj"), sizeof(VehicleSM));
 	SMObject XboxObj(_TEXT("XboxObj"), sizeof(Remote));
 
-	/*PMObj.SMCreate();
-	if (PMObj.SMCreateError) {
-		Console::WriteLine("Shared memory creation failed");
-		return -1;
-	}*/
-
 	PMObj.SMAccess();
 	if (PMObj.SMAccessError) {
 		Console::WriteLine("Shared memory access failed");
@@ -43,37 +37,30 @@ int main()
 
 	while (!PMSMPtr->Shutdown.Flags.Vehicle)
 	{
+		// Setting vehicle heartbeat to alive
 		PMSMPtr->Heartbeats.Flags.Vehicle = 1;
 
+		// Checking PM heartbeat via vehicle
 		if (PMSMPtr->PMHeartbeats.Flags.Vehicle)
 		{
 			PMSMPtr->PMHeartbeats.Flags.Vehicle = 0;
 			WaitCount = 0;
-			//Console::WriteLine("{0,9:F6}", WaitCount);
 		}
 		else
 		{
 			if (++WaitCount > WAIT_TIME)
 			{
-				Console::WriteLine("Vehicle is dead");
 				PMSMPtr->Shutdown.Status = 0xFF;
 			}
-		//	Console::WriteLine("Waitcount: " + WaitCount);
 			
 		}
 
-		
 		vehicle->ControlVehicle(XboxSMPtr->remoteSteering, XboxSMPtr->remoteSpeed, flag); // Need to add Xbox SM data to the first 2 parameters
 		flag = !flag;
-		//Console::WriteLine("{0,9:F3}", PMSMPtr->PMTimeStamp);
-		//MSMPtr->PMTimeStamp = 0;
-		//if (_kbhit()) break;
 		Thread::Sleep(20);
 	}
 
-	//Console::ReadKey();
 	Console::WriteLine("Vehicle Process terminated normally.");
-	//Console::ReadKey();
 
 	return 0;
 }

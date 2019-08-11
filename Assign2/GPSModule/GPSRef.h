@@ -17,7 +17,6 @@ private:
 	System::String^ IPAddress;
 	System::String^ ResponseData; // String to store received data for display
 
-
 public:
 	TcpClient^ Client;
 	NetworkStream^ Stream;
@@ -28,17 +27,15 @@ public:
 	int ErrorCode = 0;
 	unsigned int CalculatedCRC;
 	unsigned int ServerCRC;
-
-	// arrays of unsigned chars to send and receive data
-	array<unsigned char>^ RecvData;
+	array<unsigned char>^ RecvData; // Arrays of unsigned chars to send and receive data
 public:
 	GPSRef(System::String^ ipaddress, int port);
 	~GPSRef();
 	unsigned long CRC32Value(int i);
 	unsigned long CalculateBlockCRC32(unsigned long ulCount, unsigned char* ucBuffer);
 
-	bool Connect();
-	void GetGPSData();
+	bool Connect(); // Setup and connect to TCP client
+	void GetGPSData(); // Get GPS data information from server and store it in struct
 
 	double GetNorthing();
 	double GetEasting();

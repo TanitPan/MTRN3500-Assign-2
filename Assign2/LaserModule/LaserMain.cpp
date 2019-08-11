@@ -1,24 +1,13 @@
 //Compile in a C++ CLR empty project
 #include <SMObject.h>
 #include <SMStructs.h>
-//#using <System.dll>
+#include <conio.h> // _kbhit()
 #include "LiDAR.h"
-
-
-#include <conio.h>//_kbhit()
 #define WAIT_TIME 250
-
-//using namespace System;
-//using namespace System::Net::Sockets; Already include in LiDAR.h
-//using namespace System::Net;
-//using namespace System::Text;
-
-//using namespace System::Threading;
-
 
 int main()
 {
-
+	// Declaring and accessing SM Object
 	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
 	SMObject LaserObj(_TEXT("LaserObj"), sizeof(Laser));
 
@@ -76,6 +65,7 @@ int main()
 		MyLaser->ContinueFlag = 0;
 		MyLaser->GetLaserScan();
 		
+		// If continue flag set then skip current loop
 		if (MyLaser->ContinueFlag == 1) continue;
 		for (int i = 0; i < MyLaser->NumRanges; i++)
 		{
@@ -83,12 +73,8 @@ int main()
 			LaserSMPtr->XRange[i] = MyLaser->RangeX[i];
 			LaserSMPtr->YRange[i] = MyLaser->RangeY[i];
 			
-
-			//Console::WriteLine("{0,10:F3} {1,10:F3}", LaserSMPtr->XRange[i], LaserSMPtr->YRange[i]);
 		}
 
-		//Console::WriteLine("StartAngle:{0,10:F3}  Resolution:{1,10:F3}  NumRanges:{2,10:D}", StartAngle, Resolution, NumRanges);
-		//Console::WriteLine("{0,10:F3}", StartAngle);
 
 		// Print the received string on the screen
 		MyLaser->GetXYRangeData();
@@ -96,13 +82,7 @@ int main()
 		Sleep(35);
 	}
 
-	/*MyLaser->Stream->Close();
-	MyLaser->Client->Close();*/
-
 	Console::WriteLine("LaserMain terminated normally.");
-	//Console::ReadKey();
-	//Console::ReadKey();
-
 
 	return 0;
 }

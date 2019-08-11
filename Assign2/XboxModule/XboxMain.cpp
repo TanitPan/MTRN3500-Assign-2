@@ -5,8 +5,8 @@
 
 
 #define WAIT_TIME 100 // 300
-#define MIN_JOY_STICK -32768.0
-#define MAX_JOY_STICK 32767.0
+#define MIN_RANGE -32768.0
+#define MAX_RANGE 32767.0
 
 using namespace System;
 using namespace System::Threading;
@@ -32,8 +32,10 @@ int main()
 
 	while (!PMSMPtr->Shutdown.Flags.Xbox)
 	{
+		// Set Xbox heartbeat to alive
 		PMSMPtr->Heartbeats.Flags.Xbox = 1;
 
+		// Check PM heartbeat via Xbox
 		if (PMSMPtr->PMHeartbeats.Flags.Xbox)
 		{
 			PMSMPtr->PMHeartbeats.Flags.Xbox = 0;
@@ -43,22 +45,21 @@ int main()
 		{
 			if (++WaitCount > WAIT_TIME)
 			{
-				Console::WriteLine("Xbox Die");
 				PMSMPtr->Shutdown.Status = 0xFF;
 			}
-			Console::WriteLine("Waitcount: " + WaitCount);
 			
 		}
-		//Console::WriteLine(controller.PressedA());
-
+		// Set deadzone
 		controller.SetDeadzone(5000);
+
 		// Scaling speed to -1 +1 and Steering to -40 +40
-		double speed = (controller.RightThumbLocation().GetY() - MIN_JOY_STICK)/ (MAX_JOY_STICK - MIN_JOY_STICK) * (1 - (-1)) + (-1);
-		double steering = (controller.LeftThumbLocation().GetX() - MIN_JOY_STICK) / (MAX_JOY_STICK - MIN_JOY_STICK) * (40 - (-40)) + (-40);
+		double speed = (controller.RightThumbLocation().GetY() - MIN_RANGE) / (MAX_RANGE - MIN_RANGE) * (1 - (-1)) - 1;
+		double steering = (controller.LeftThumbLocation().GetX() - MIN_RANGE) / (MAX_RANGE - MIN_RANGE) * (40 - (-40)) - 40;
 		XboxSMPtr->remoteSpeed = speed;
 		XboxSMPtr->remoteSteering = steering;
-		XboxSMPtr->routineShutdown = controller.PressedB();
+		XboxSMPtr->routineShutdown = controller.PressedB(); // set routine shutdown flag into SM
 
+		// Check current controller connection
 		if (!controller.IsConnected())
 		{
 			XboxSMPtr->remoteSpeed = 0;
@@ -71,6 +72,5 @@ int main()
 	}
 
 	Console::WriteLine("Xbox Process terminated normally");
-	//Console::ReadKey();
 	return 0;
 }

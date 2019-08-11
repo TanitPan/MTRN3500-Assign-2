@@ -1,10 +1,7 @@
-
 #include <SMStructs.h>
 #include <SMObject.h>
 #include <conio.h>
 #include "GPSRef.h"
-
-
 
 #define WAIT_TIME 100 // may need some modification later (100)
 
@@ -14,14 +11,11 @@ using namespace System::Net;
 using namespace System::Text;
 using namespace System::Net::Sockets;
 
-
-
-
 int main()
 {
+	// Declaring and accessing SM Object 
 	SMObject PMObj(_TEXT("PMObj"), sizeof(PM));
 	SMObject GPSObj(_TEXT("GPSObj"), sizeof(GPS));
-
 
 	PM* PMSMPtr = nullptr;
 	GPS* GPSSMPtr = nullptr;
@@ -59,26 +53,24 @@ int main()
 		{
 			PMSMPtr->PMHeartbeats.Flags.GPS = 0;
 			WaitCount = 0;
-			//Console::WriteLine("{0,9:F6}", WaitCount);
 		}
 		else
 		{
 			if (++WaitCount > WAIT_TIME)
 			{
-				//Console::WriteLine(WaitCount);
-				Console::WriteLine("GPS am dead");
 				PMSMPtr->Shutdown.Status = 0xFF;
 			}
-			Console::WriteLine("Waitcount: " + WaitCount);
+
 		}
 
 		System::Threading::Thread::Sleep(5);
-		//Console::WriteLine("{0,9:F3}", PMSMPtr->PMTimeStamp);
 		PMSMPtr->PMTimeStamp = 0;
 
 		MyGPS->ErrorCode = 0;
 		MyGPS->ContinueFlag = 0;
 		MyGPS->GetGPSData();
+
+		// If continue flag set then skip current loop
 		if (MyGPS->ContinueFlag == 1) continue;
 
 		if (!MyGPS->ErrorCode)
@@ -96,11 +88,7 @@ int main()
 		//if (_kbhit()) break;
 		Thread::Sleep(20);
 	}
-	/*MyGPS->Stream->Close();
-	MyGPS->Client->Close();*/
-	//Console::ReadKey();
-	Console::WriteLine("GPS terminated normally.");
-//	Console::ReadKey();
 
+	Console::WriteLine("GPS terminated normally.");
 	return 0;
 }

@@ -18,12 +18,12 @@ public:
 	NetworkStream^ Stream;
 	double speed;
 	double steering;
-	array<unsigned char>^ SendData; // arrays of unsigned chars to send and receive data
+	array<unsigned char>^ SendData; // Arrays of unsigned chars to send and receive data
 
 public:
 	~VehicleRef();
 	VehicleRef(System::String^ ipaddress, int port);
-	bool Connect();
+	bool Connect(); // Setup client, connect and authenticate to server
 	void ControlVehicle(double steering, double speed, unsigned int flag);
 	double GetSpeed();
 	double GetSteering();

@@ -147,7 +147,7 @@ void MyVehicle::plotLaser()
 	{
 		glBegin(GL_LINES);
 		glVertex3f(0,0,0);
-		glVertex3f(*(rangeX + i)/1000.0, 0, -*(rangeY + i )/1000.0);
+		glVertex3f(*(rangeX + i)/1000.0, 0, -*(rangeY + i )/1000.0); // Dividing by 1000 to convert mm to m
 
 		glEnd();
 
